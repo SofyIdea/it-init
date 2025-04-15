@@ -1,0 +1,199 @@
+/* Mobile Styles */
+@media (max-width: 768px) {
+    /* Base Adjustments */
+    body {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+
+    header {
+        position: relative !important; /* Отменяем фиксацию */
+        top: auto;
+        left: auto;
+        width: 100%;
+        padding: 15px 20px !important;
+        background: rgb(21, 12, 133) !important;
+    }
+
+    .head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+    }
+
+    .logo {
+        flex-direction: row !important;
+        gap: 15px !important;
+        width: 100%;
+    }
+
+    .logo img {
+        width: 40px;
+    }
+
+    .logo h1 {
+        font-size: 24px !important;
+    }
+
+    /* Auth Buttons */
+    .auth-buttons {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 5px !important;
+        flex-wrap: nowrap !important;
+        margin-top: 5px !important;
+        width: 100% !important;
+        justify-content: flex-start !important;
+        align-items: center;
+    }
+
+    .auth-buttons button,
+    .auth-buttons a {
+        width: auto !important;
+        padding: 8px 12px !important;
+        white-space: nowrap;
+        min-width: auto !important;
+    }
+
+    /* Main Section */
+    .main {
+        padding-top: 80px !important;
+        padding-bottom: 50px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .main img {
+        width: 80%;
+        max-width: 300px;
+        margin-top: 20px;
+    }
+
+    .about_btn {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 15px !important;
+        font-size: 16px !important;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .caption {
+        font-size: 36px;
+        line-height: 1.2;
+    }
+
+    .word {
+        font-size: 16px;
+    }
+
+    /* Sections */
+    .dark,
+    .darkest,
+    .section {
+        padding: 50px 20px;
+    }
+
+    .topic {
+        font-size: 30px;
+    }
+
+    /* Services */
+    .service_blocks {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .service_block {
+        padding: 20px;
+        width: 100%;
+    }
+
+    .caption_service {
+        font-size: 20px;
+    }
+
+    
+    /* Articles */
+    .articles-list {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .article-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .article-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    /* Contacts */
+    .contacts {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .contact_list {
+        width: 100%;
+        gap: 15px !important;
+    }
+
+    .contact_name {
+        font-size: 20px !important;
+        padding: 0;
+    }
+
+    /* Footer */
+    footer {
+        padding: 5px !important;
+        font-size: 12px !important;
+        text-align: center;
+    }
+
+    /* Modals */
+    .modal-reg-content {
+        width: 90%;
+        max-width: 400px;
+        padding: 20px !important;
+    }
+
+    #addArticleModal .modal-reg-content {
+        max-width: 95% !important;
+        width: 100% !important;
+        padding: 20px !important;
+    }
+
+    /* Form Adjustments */
+    .register-form input,
+    .register-form textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    #articleForm .form-field {
+        width: 100% !important;
+    }
+
+    #articleForm textarea {
+        width: 100% !important;
+    }
+
+    /* Responsive Tables */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Scroll Improvements */
+    html {
+        scroll-behavior: smooth;
+    }
+}
+

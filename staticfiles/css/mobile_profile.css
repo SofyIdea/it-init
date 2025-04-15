@@ -1,0 +1,152 @@
+@media (max-width: 767px) {
+    .container {
+        margin: 100px auto 20px;
+        padding: 0 15px;
+    }
+
+    .profile-block, .requests-block {
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .profile-block p {
+        font-size: 14px;
+        padding: 3px 0;
+    }
+
+    .requests-block {
+        margin-top: 20px;
+    }
+
+    .requests-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .about_btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .request-item {
+        padding: 12px;
+        border-bottom: 1px solid rgb(193, 193, 193);
+    }
+
+    .request-item:last-child {
+        border-bottom: none;
+    }
+
+    .request-item p {
+        margin: 3px 0;
+        font-size: 14px;
+    }
+
+    .status-info {
+        align-items: flex-end;
+    }
+
+    .cancellation-reason {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .modal-reg-content {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .register-form {
+        gap: 15px;
+    }
+
+    #requestForm {
+        padding: 0;
+    }
+
+    .register-form input,
+    .register-form select,
+    .register-form textarea {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .register-form button {
+        font-size: 14px;
+        padding: 10px 15px;
+        width: 100%;
+    }
+
+    footer {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .payment-info strong {
+        font-size: 14px !important;
+    }
+
+    .darkest {
+        padding: 15px;
+    }
+
+    .contacts {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+    }
+
+    .contact_list {
+        text-align: left;
+        width: 100%;
+    }
+
+    .contact_name {
+        font-size: 1.2rem;
+        margin-bottom: 0;
+        color: #d6def7;
+        padding: 0;
+    }
+
+    .contact_text {
+        font-size: 0.9rem !important;
+        margin: 0 !important;
+        color: #a1b2cf !important;
+        padding: 0;
+    }
+
+    .contact_text:hover {
+        color: #0089ff !important;
+    }
+
+    .contact_list:not(:last-child) {
+        padding-bottom: 15px;
+    }
+
+    .contact_list:empty {
+        display: none;
+    }
+
+    footer {
+        font-size: 1rem;
+        padding: 15px;
+    }
+
+    .head {
+        padding: 0 15px;
+    }
+
+    .logo {
+        margin-right: 15px;
+    }
+
+    .head > a {
+        margin-left: 15px;
+    }
+}

@@ -1,0 +1,192 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    color: white;
+    font-size: 20px;
+    font-weight: normal;
+    transition: 0.6s;
+}
+
+button {
+    background-color: rgb(0, 139, 255);
+    border-radius: 5px;
+    width: 253px;
+    height: 50px;
+    border: solid 0px;
+}
+
+button:hover {
+    background-color: white;
+    color: rgb(0, 139, 255);
+    cursor: pointer;
+}
+
+input {
+    border-radius: 5px;
+    padding: 10px;
+    padding-left: 20px;
+    color: rgb(21, 12, 133);
+}
+
+.topic {
+    font-size: 45px;
+}
+
+.word {
+    line-height: 30px;
+    color: rgb(214, 222, 231);
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+/* ГЛАВНАЯ СТРАНИЦА */
+
+body {
+    width: 100%;
+    max-width: 1200px;
+    background-color: rgb(21, 12, 133);
+    margin: 0 auto;
+}
+
+header {
+    width: 100%;
+    background-color: rgb(21, 12, 133);
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.head {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+h1 {
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.logo {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.logo img {
+    cursor: pointer;
+    width: 60px;
+}
+
+.logo a {
+    text-decoration: none;
+}
+
+.sections {
+    display: flex;
+    gap: 40px;
+    padding-right: 130px;
+}
+
+.sections a {
+    color: rgb(214, 222, 231);
+}
+
+.sections a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.scrolled {
+    transition: 1s;
+    /* color: rgba(255, 255, 255, 0.5); */
+    /* background-color: rgba(21, 12, 133, 0.5); */
+    padding: 10px 0;
+    box-shadow: 0 1px 5px rgb(0, 137, 255);
+}
+
+.scrolled button {
+    font-size: 15px;
+    width: 180px;
+    height: 30px;
+}
+
+.scrolled h1 {
+    font-size: 30px;
+}
+
+.scrolled img {
+    width: 40px;
+}
+
+/* КОНТАКТЫ */
+
+.darkest {
+    width: 100vw;
+    margin-left: calc((100% - 100vw) / 2);
+    background-color: rgb(4, 2, 55);
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+.contacts {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 35px;
+}
+
+.contact_list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.contact_name {
+    font-size: 35px;
+    padding-bottom: 20px;
+}
+
+.contact_text {
+    text-decoration: none;
+}
+
+.contact_text:hover {
+    cursor: pointer;
+    color: rgb(0, 137, 255);
+}
+
+/* ПОДВАЛ */
+
+footer {
+    width: 100vw;
+    margin-left: calc((100% - 100vw) / 2);
+    background-color: rgb(4, 2, 55);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+    border-top: solid 1px rgb(39, 36, 84);
+}
+
+footer a {
+    color: rgb(0, 137, 255);
+    text-decoration: underline;
+}
+
+footer a:hover {
+    cursor: pointer;
+}

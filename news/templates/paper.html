@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИНИТ</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/new.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile_paper.css' %}">
+</head>
+<body>
+
+    <!-- ГЛАВНАЯ СТРАНИЦА -->
+    <header class="header" id="main">
+        <div class="head">
+            <div class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="logo">
+                <h1>ИНИТ</h1>
+            </div>
+            <a href="{% url 'main_page' %}">НА ГЛАВНУЮ</a>
+        </div>
+    </header>
+    
+    <div class="new_block">
+        <div class="new_container">
+            <div class="image_wrapper">
+                <img src="{{ paper.image.url }}" alt="Статья">
+            </div>
+            <div class="text_wrapper">
+                <p class="new_date">{{ paper.date|date:"d.m.Y" }}</p>
+                <h2 class="new_title">{{ paper.title }}</h2>
+                <div class="new_content">{{ paper.content }}</div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- КОНТАКТЫ -->
+    <div class="darkest" id="contacts">
+        <div class="contacts">
+            <div class="contact_list">
+                <p class="contact_name">Компания</p>
+                <a href="https://www.audit-it.ru/contragent/1226600016092_ooo-init?utm_source=chatgpt.com" class="word contact_text">ООО ИНИТ</a>
+                <a href="https://rusprofiles.com/init-1226600016092/" class="word contact_text">Руководитель</a>
+                <a href="https://companies.rbc.ru/id/1226600016092-ooo-init/?utm_source=chatgpt.com" class="word contact_text">Основная информация</a>
+            </div>
+            <div class="contact_list">
+                <p class="contact_name">Быстрые ссылки</p>
+                <a href="https://dobrotsen.ru/" class="word contact_text">Партнёр</a>
+                <a href="https://synapsenet.ru/organizacii/1226600016092-ooo-init?utm_source=chatgpt.com" class="word contact_text">Синапс</a>
+                <a href="https://www.list-org.com/company/13342910" class="word contact_text">Организация</a>
+            </div>
+            <div class="contact_list"></div>
+        </div>
+    </div>
+
+    <!-- ПОДВАЛ -->
+    <footer><span>ИНИТ</span></footer>
+</body>
+</html>

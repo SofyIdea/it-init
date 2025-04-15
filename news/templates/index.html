@@ -1,0 +1,777 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИНИТ</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile_main.css' %}">
+</head>
+<body>
+
+    <!-- ГЛАВНАЯ СТРАНИЦА -->
+    <header class="header">
+        <div class="head">
+            <div class="logo">
+                <a href="{% url 'main_page' %}"><img src="{% static 'images/logo.png' %}" alt="logo"></a>
+                <a href="{% url 'main_page' %}"><h1>ИНИТ</h1></a>
+            </div>
+                {% if user.is_authenticated %}
+                    <div class="auth-buttons">
+                        <button id="logoutBtn" class="contact btn-out">Выйти</button>
+                        <a href="{% url 'user_profile' %}" class="contact open-prof">Профиль</a>
+                    </div>
+                {% else %}
+                    <div>
+                        <button id="openLoginModalBtn" class="contact btn-come">Войти</button>
+                        <button id="openRegisterModalBtn" class="contact">Зарегистрироваться</button>
+                    </div>
+                {% endif %}
+            
+        </div>
+    </header>
+
+    <div class="main" id="main">
+        <div class="main_text">
+            <p class="caption">Предлагаем вашей компании помощь в разработке</p>
+            <p class="word">Наша команда предоставляет услуги по созданию и сопровождению программных продуктов на платформе 1С, а также консультации в<br> сфере информационных технологий.</p>
+            <button id="openRequestModalBtn" class="about_btn">Оставить заявку →</button>
+        </div>
+        <img src="{% static 'images/main_img.png' %}">
+    </div>
+
+    <!-- О НАС -->
+    <div class="dark" id="about">
+        <div class="about content">
+            <p class="topic">О нас</p>
+            <p class="word">Наша команда имеет большой практический опыт решения прикладных IT задач внутри крупных компаний, благодаря чему мы можем быстро и качественно достигать поставленных целей.</p>
+            <p class="word">Собственная команда разработки, поддержки и управления проектами позволяет оказывать полный спектр IT услуг без привлечения третьих лиц.</p>
+        </div>
+    </div>
+
+    <!-- УСЛУГИ -->
+    <div class="dark" id="services">
+        <div class="services content">
+            <p class="topic">Наши услуги</p>
+            <div class="service_blocks">
+
+                {% for service in services %}
+                    <div class="service_block">
+                        <p class="caption_service">{{ service.title }}</p>
+                        <!-- <p class="word">от {{ service.price }}р</p> -->
+                        <p class="word">{{ service.about }}</p>
+                    </div>
+                {% endfor %}
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- ОТЗЫВЫ -->
+    <div class="section" id="reviews">
+        <p class="topic">Отзывы наших клиентов</p>
+        <div class="reviews-container">
+            <div class="reviews_blocks">
+                {% for feedback in feedbacks %}
+                    <div class="review_block {% if forloop.counter > 3 %}hidden-review{% endif %}">
+                        <div class="review_user">
+                            <p class="review_user_name">{{ feedback.author }}</p>
+                        </div>
+                        <p class="word">{{ feedback.content }}</p>
+                        <div class="rating">
+                            {% with "x"|rjust:feedback.rating as stars %}
+                                {% for _ in stars %}
+                                    <img src="{% static 'images/star.png' %}" alt="star">
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <div class="review-actions">
+                            {% if user.is_authenticated %}
+                                <button class="btn-reply" data-review-id="{{ feedback.id }}">Ответить</button>
+                            {% endif %}
+                            {% with feedback.responses.all as responses %}
+                            {% if responses %}
+                            <button class="btn-show-responses" data-target="responses-{{ feedback.id }}">Показать ответы</button>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <!-- отаеты -->
+                        {% with feedback.responses.all as responses %}
+                        {% if responses %}
+                        <div class="responses-list" id="responses-{{ feedback.id }}" style="display: none;">
+                        <!-- В блоке отображения ответов -->
+                        {% for response in responses %}
+                        <div class="response-item {% if response.replies.exists %}has-replies{% endif %}">
+                            <div class="response-content">
+                                <p><strong>{{ response.author.login }}</strong></p>
+                                <p>{{ response.text }}</p>
+                            </div>
+                            
+                            <!-- Контейнер для кнопок -->
+                            <div class="response-actions">
+                                {% if user.is_authenticated %}
+                                <button class="btn-reply-reply" data-response-id="{{ response.id }}">
+                                    Ответить
+                                </button>
+                                {% endif %}
+                                
+                                <!-- Кнопка показа вложенных ответов -->
+                                {% with response.replies.all as replies %}
+                                {% if replies %}
+                                <button class="btn-show-replies" data-target="replies-{{ response.id }}">
+                                    Показать ответы
+                                </button>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+
+                            <!-- Вложенные ответы -->
+                            {% with response.replies.all as replies %}
+                            {% if replies %}
+                            <div class="replies-list" id="replies-{{ response.id }}" style="display: none;">
+                                {% for reply in replies %}
+                                <div class="reply-item">
+                                    <p><strong>{{ reply.author.login }}</strong></p>
+                                    <p>{{ reply.text }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if feedbacks|length > 3 %}
+            <button class="btn-show-all">Посмотреть все отзывы</button>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <button id="openFeedbackModalBtn" class="contact">Оставить отзыв</button>
+        {% endif %}
+    </div>
+
+    <!-- ПОСЛЕДНИЕ СТАТЬИ -->
+    <div class="section">
+        <p class="topic">Последние статьи</p>
+        {% if user.is_superuser %}
+            <button id="openArticleModalBtn" class="contact" style="margin-bottom: 20px;">Добавить статью</button>
+        {% endif %}
+        <div class="articles-list">
+            {% for article in articles %}
+                <div class="article-item">
+                    <a href="{% url 'paper' article.id %}" class="article-link">
+                        <img src="{{ article.image.url }}" class="article-img">
+                        <div class="article-content">
+                            <p class="article-date">{{ article.date|date:"d.m.Y" }}</p>
+                            <p class="article-title">{{ article.title }}</p>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- КОНТАКТЫ -->
+    <div class="darkest" id="contacts">
+        <div class="contacts">
+            <div class="contact_list">
+                <p class="contact_name">Компания</p>
+                <a href="https://www.audit-it.ru/contragent/1226600016092_ooo-init?utm_source=chatgpt.com" class="word contact_text">ООО ИНИТ</a>
+                <a href="https://rusprofiles.com/init-1226600016092/" class="word contact_text">Руководитель</a>
+                <a href="https://companies.rbc.ru/id/1226600016092-ooo-init/?utm_source=chatgpt.com" class="word contact_text">Основная информация</a>
+            </div>
+            <div class="contact_list">
+                <p class="contact_name">Быстрые ссылки</p>
+                <a href="https://dobrotsen.ru/" class="word contact_text">Партнёр</a>
+                <a href="https://synapsenet.ru/organizacii/1226600016092-ooo-init?utm_source=chatgpt.com" class="word contact_text">Синапс</a>
+                <a href="https://www.list-org.com/company/13342910" class="word contact_text">Организация</a>
+            </div>
+            <div class="contact_list"></div>
+        </div>
+    </div>
+
+    <!-- ПОДВАЛ -->
+    <footer><span>ИНИТ</span></footer>
+    
+    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <div id="modal" class="modal-reg hide">
+        <div id="modalContent" class="modal-reg-content">
+            <form id="registerForm" method="post" class="register-form">
+                {% csrf_token %}
+                <div id="form-errors" class="errors"></div> 
+                {{ form.as_p }}
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="loginModal" class="modal-reg hide">
+        <div id="loginModalContent" class="modal-reg-content">
+            <form id="loginForm" method="post" class="register-form">
+                {% csrf_token %}
+                {{ form_login.as_p }}
+                <button type="submit">Войти</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="feedbackModal" class="modal-reg hide">
+        <div id="feedbackModalContent" class="modal-reg-content">
+            <form id="feedbackForm" method="post" class="register-form">
+                {% csrf_token %}
+                <label for="id_content">Ваш отзыв:</label>
+                {{ form_feedback.content }}
+                <div class="star-rating" data-rating="3">
+                    <span data-value="1">☆</span>
+                    <span data-value="2">☆</span>
+                    <span data-value="3">☆</span>
+                    <span data-value="4">☆</span>
+                    <span data-value="5">☆</span>
+                </div>
+                <input type="hidden" id="id_rating" name="rating" value="3">
+                <button type="submit">Отправить отзыв</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="addArticleModal" class="modal-reg hide">
+        <div class="modal-reg-content">
+            <h2>Добавить статью</h2>
+            <form id="articleForm" method="post" enctype="multipart/form-data" class="register-form">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label for="{{ form_article.title.id_for_label }}">Заголовок</label>
+                    {{ form_article.title }}
+                </div>
+                <div class="form-field">
+                    <label for="{{ form_article.content.id_for_label }}">Текст статьи</label>
+                    {{ form_article.content }}
+                </div>
+                <div class="form-field">
+                    <label for="{{ form_article.image.id_for_label }}">Изображение</label>
+                    {{ form_article.image }}
+                </div>
+                <button type="submit" class="contact">Создать</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="requestModal" class="modal-reg hide">
+        <div id="requestModalContent" class="modal-reg-content">
+            <h2>Оставить заявку</h2>
+            <form id="requestForm" method="post" class="register-form">
+                {% csrf_token %}
+                <label for="id_email">Email:</label>
+                {{ request_form.email }}
+                <label for="id_phone">Телефон:</label>
+                {{ request_form.phone }}
+                <label for="id_service">Выберите услугу:</label>
+                <select id="id_service" name="service">
+                    <option value="">---------</option>
+                    {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.title }}</option>
+                    {% endfor %}
+                </select>
+                <div id="otherServiceField" style="display: none;">
+                    <label for="id_other_service_description">Описание услуги:</label>
+                    <textarea id="id_other_service_description" name="other_service_description" placeholder="Опишите услугу..." rows="3"></textarea>
+                </div>
+                <label for="id_payment_method">Способ оплаты:</label>
+                {{ request_form.payment_method }}
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="authRequiredModal" class="modal-reg hide">
+        <div class="modal-reg-content">
+            <p class="please-reg">Вы не авторизованы. Пожалуйста, войдите или зарегистрируйтесь.</p>
+            <button id="closeAuthRequiredModalBtn" class="contact">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- окно ответа -->
+    <div id="responseModal" class="modal-reg hide">
+        <div class="modal-reg-content">
+            <h2>Ответить на отзыв</h2>
+            <form id="responseForm" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="review_id" id="responseReviewId">
+                {{ response_form.text }}
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="responseReplyModal" class="modal-reg hide">
+        <div class="modal-reg-content">
+            <h2>Ответить на комментарий</h2>
+            <form id="responseReplyForm" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="response_id" id="responseReplyId">
+                {{ response_reply_form.text }}
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+            // Функция для закрытия модальных окон
+            function closeModal(modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) {
+                        modal.classList.add('hide');
+                    }
+                });
+            }
+        
+            // Открытие регистрации
+            const modal = document.getElementById('modal');
+            const openModalBtn = document.getElementById('openRegisterModalBtn');
+            if (openModalBtn) {
+                openModalBtn.addEventListener('click', function () {
+                    modal.classList.remove('hide');
+                });
+            }
+            closeModal(modal);
+        
+            // Открытие входа
+            const loginModal = document.getElementById('loginModal');
+            const openLoginModalBtn = document.getElementById('openLoginModalBtn');
+            if (openLoginModalBtn) {
+                openLoginModalBtn.addEventListener('click', function () {
+                    loginModal.classList.remove('hide');
+                });
+            }
+            closeModal(loginModal);
+        
+            $('#registerForm').on('submit', function (e) {
+                e.preventDefault(); 
+                const formData = $(this).serialize();
+                $.ajax({
+                    url: "{% url 'register' %}",
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Регистрация прошла успешно!");
+                            modal.classList.add('hide'); 
+                            wwindow.location.href = "{% url 'user_profile' %}";
+                        } else {
+                            let errorsHtml = '<ul>';
+                            for (const [field, messages] of Object.entries(response.errors)) {
+                                messages.forEach(message => {
+                                    errorsHtml += `<li>${message}</li>`;
+                                });
+                            }
+                            errorsHtml += '</ul>';
+                            $('#form-errors').html(errorsHtml);
+                        }
+                    },
+                    error: function () {
+                        alert("Ошибка при отправке данных!");
+                    }
+                });
+            });
+        
+            $('#loginForm').on('submit', function (e) {
+                e.preventDefault();  
+                const formData = $(this).serialize();
+                $.ajax({
+                    url: "{% url 'login' %}",  
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Вы успешно вошли!");
+                            loginModal.classList.add('hide');
+                            window.location.href = "{% url 'user_profile' %}";
+                        } else {
+                            alert("Ошибка при входе: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Ошибка при отправке данных!");
+                    }
+                });
+            });
+        
+            // Окно для отзыва
+            const feedbackModal = document.getElementById('feedbackModal');
+            const openFeedbackModalBtn = document.getElementById('openFeedbackModalBtn');
+            if (openFeedbackModalBtn) {
+                openFeedbackModalBtn.addEventListener('click', function () {
+                    feedbackModal.classList.remove('hide');
+                });
+            }
+            closeModal(feedbackModal);
+    
+            $('#feedbackForm').on('submit', function (e) {
+                e.preventDefault(); 
+                const formData = $(this).serialize();
+                $.ajax({
+                    url: "{% url 'add_feedback' %}",
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Отзыв успешно добавлен!");
+                            feedbackModal.classList.add('hide'); 
+                            window.location.reload();
+                        } else {
+                            alert("Ошибка при добавлении отзыва: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Ошибка при отправке данных!");
+                    }
+                });
+            });
+        
+            // Выход
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function () {
+                    fetch("{% url 'user_logout' %}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrftoken,
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert("Ошибка при выходе!");
+                            }
+                        })
+                        .catch(error => {
+                            alert("Ошибка при отправке запроса!");
+                        });
+                });
+            }
+        
+            // Звёзды
+            const starRating = document.querySelector('.star-rating');
+            const hiddenInput = document.getElementById('id_rating');
+            let currentRating = parseInt(hiddenInput.value);
+            updateStars(currentRating);
+            starRating.addEventListener('click', function (e) {
+                if (e.target.tagName === 'SPAN') {
+                    const selectedValue = parseInt(e.target.dataset.value);
+                    hiddenInput.value = selectedValue;
+                    updateStars(selectedValue);
+                }
+            });
+            starRating.addEventListener('mouseover', function (e) {
+                if (e.target.tagName === 'SPAN') {
+                    const hoverValue = parseInt(e.target.dataset.value);
+                    updateStars(hoverValue);
+                }
+            });
+            starRating.addEventListener('mouseout', function () {
+                updateStars(parseInt(hiddenInput.value));
+            });
+            function updateStars(rating) {
+                const stars = starRating.querySelectorAll('span');
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                        star.textContent = '★'; // Заполненная звезда
+                    } else {
+                        star.classList.remove('active');
+                        star.textContent = '☆'; // Пустая звезда
+                    }
+                });
+            }
+        
+            document.addEventListener('DOMContentLoaded', () => {
+                const initialRating = parseInt(hiddenInput.value) || 3;
+                updateStars(initialRating);
+            });
+                    
+            // окно ответа
+            document.querySelectorAll('.btn-reply').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reviewId = this.dataset.reviewId;
+                    const modal = document.getElementById('responseModal');
+                    modal.querySelector('#responseReviewId').value = reviewId;
+                    modal.classList.remove('hide');
+                    closeModal(modal);
+                });
+            });
+        
+            document.getElementById('responseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                fetch("{% url 'add_response' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert('Ответ успешно добавлен!');
+                        document.getElementById('responseModal').classList.add('hide');
+                        window.location.reload(); 
+                    } else {
+                        alert('Ошибка: ' + data.message);
+                    }
+                });
+            });
+        
+            document.querySelectorAll('.btn-show-responses').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.target;
+                    const list = document.getElementById(target);
+                    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+                    this.textContent = list.style.display === 'none' ? 'Показать ответы' : 'Скрыть ответы';
+                });
+            });
+            
+
+            // ОКНО ЗАЯВКИ
+            const requestModal = document.getElementById('requestModal');
+            const openRequestModalBtn = document.getElementById('openRequestModalBtn');
+            if (openRequestModalBtn) {
+                openRequestModalBtn.addEventListener('click', function () {
+                    {% if not user.is_authenticated %}
+                        authRequiredModal.classList.remove('hide');
+                    {% else %}
+                        requestModal.classList.remove('hide');
+                    {% endif %}
+                });
+            }
+            closeModal(requestModal);
+        
+            $('#requestForm').on('submit', function (e) {
+                e.preventDefault();  
+                const formData = $(this).serialize(); 
+                console.log("Serialized form data:", formData);  
+                $.ajax({
+                    url: "{% url 'create_request' %}", 
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Заявка успешно отправлена!");
+                            $('#requestModal').addClass('hide');  
+                            window.location.reload();  
+                        } else {
+                            $('.error-message').remove();
+                            for (const [field, messages] of Object.entries(response.errors)) {
+                                const input = $(`#id_${field}`);
+                                input.after(`<div class="error-message" style="color: red;">${messages.join(', ')}</div>`);
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ошибка при отправке данных:", error);
+                        alert("Произошла ошибка при отправке заявки. Пожалуйста, попробуйте позже.");
+                    }
+                });
+            });
+        
+            // Окно "Вы не авторизованы"
+            const authRequiredModal = document.getElementById('authRequiredModal');
+            const closeAuthRequiredModalBtn = document.getElementById('closeAuthRequiredModalBtn');
+        
+            // Закрытие окна "Вы не авторизованы"
+            if (closeAuthRequiredModalBtn) {
+                closeAuthRequiredModalBtn.addEventListener('click', function () {
+                    authRequiredModal.classList.add('hide');
+                });
+            }
+        
+            if (authRequiredModal) {
+                authRequiredModal.addEventListener('click', function (e) {
+                    if (e.target === authRequiredModal) { // Проверка, что клик был именно на фоне
+                        authRequiredModal.classList.add('hide');
+                    }
+                });
+            }
+
+            // Показать/скрыть "Прочие услуги"
+            const serviceSelect = document.getElementById('id_service');
+            const otherServiceField = document.getElementById('otherServiceField');
+            const otherServiceDescription = document.getElementById('id_other_service_description');
+            if (serviceSelect && otherServiceField) {
+                serviceSelect.addEventListener('change', function () {
+                    if (this.value === '7') { 
+                        otherServiceField.style.display = 'block';
+                    } else {
+                        otherServiceField.style.display = 'none';
+                        otherServiceDescription.value = '';
+                    }
+                });
+            }
+        
+            const form = document.querySelector('#requestForm');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function () {
+                    if (!this.checkValidity()) {
+                        this.classList.add('error');
+                    } else {
+                        this.classList.remove('error');
+                    }
+                });
+            });
+            form.addEventListener('submit', function (e) {
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) {
+                        input.classList.add('error');
+                        isValid = false;
+                    }
+                });
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+            // видимость отзывов
+            const showAllBtn = document.querySelector('.btn-show-all');
+            const hiddenReviews = document.querySelectorAll('.hidden-review');
+
+            if (showAllBtn) {
+                showAllBtn.addEventListener('click', function() {
+                    const isExpanded = document.querySelector('.visible-review') !== null;
+                
+                    hiddenReviews.forEach(review => {
+                        if (isExpanded) {
+                            review.classList.remove('visible-review');
+                            review.classList.add('hidden-review');
+                        } else {
+                            review.classList.remove('hidden-review');
+                            review.classList.add('visible-review');
+                        }
+                    });
+                
+                    this.textContent = isExpanded 
+                        ? 'Посмотреть все отзывы' 
+                        : 'Скрыть отзывы';
+                });
+            }
+        
+            const openArticleModalBtn = document.getElementById('openArticleModalBtn');
+            const addArticleModal = document.getElementById('addArticleModal');
+        
+            if (openArticleModalBtn && addArticleModal) {
+                openArticleModalBtn.addEventListener('click', () => {
+                    addArticleModal.classList.remove('hide');
+                    addArticleModal.classList.add('show-modal');
+                });
+
+                addArticleModal.addEventListener('click', (e) => {
+                    if (e.target === addArticleModal) {
+                        addArticleModal.classList.remove('show-modal');
+                        addArticleModal.classList.add('hide');
+                    }
+                });
+            }
+        
+            // добавление статьи
+            document.getElementById('articleForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+        
+                fetch("{% url 'add_article' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Статья успешно добавлена!");
+                        addArticleModal.classList.add('hide');
+                        window.location.reload();
+                    } else {
+                        alert("Ошибка: " + data.message);
+                    }
+                });
+            });
+            // В существующем обработчике DOMContentLoaded добавьте:
+            document.querySelectorAll('.btn-reply-reply').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const responseId = this.dataset.responseId;
+                    const modal = document.getElementById('responseReplyModal');
+                    modal.querySelector('#responseReplyId').value = responseId;
+                    modal.classList.remove('hide');
+                    closeModal(modal);
+                });
+            });
+
+            // ответ на комментарий
+            document.getElementById('responseReplyForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                fetch("{% url 'add_response_reply' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert('Ответ успешно добавлен!');
+                        document.getElementById('responseReplyModal').classList.add('hide');
+                        window.location.reload();
+                    } else {
+                        alert('Ошибка: ' + data.message);
+                    }
+                });
+            });
+
+            // показать/скрыть ответы на ответы
+            document.querySelectorAll('.btn-show-replies').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.target;
+                    const list = document.getElementById(target);
+                    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+                    this.textContent = list.style.display === 'none' ? 'Показать ответы' : 'Скрыть ответы';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

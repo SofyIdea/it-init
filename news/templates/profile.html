@@ -1,0 +1,252 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИНИТ</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile_profile.css' %}">
+</head>
+<body>
+    
+    <!-- ГЛАВНАЯ СТРАНИЦА -->
+    <header class="header" id="main">
+        <div class="head">
+            <div class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="logo">
+                <h1>ИНИТ</h1>
+            </div>
+            <a href="{% url 'main_page' %}">НА ГЛАВНУЮ</a>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="container">
+        <!-- ПРОФИЛЬ -->
+        <div class="profile-block">
+            <h2>Профиль</h2>
+            <p><strong>Имя пользователя:</strong> <i>{{ user.login }}</i></p>
+            <p><strong>ФИО:</strong> <i>{{ user.full_name }}</i></p>
+            <p><strong>Номер телефона:</strong> <i>{{ user.phone }}</i></p>
+            <p><strong>E-mail:</strong> <i>{{ user.email }}</i></p>
+        </div>
+
+        <!-- ЗАЯВКИ -->
+        <div class="requests-block">
+            <div class="requests-header">
+                <h2>Заявки</h2>
+                <button id="openRequestModalBtn" class="about_btn">Оставить заявку →</button>
+            </div>
+            <div class="request-list">
+                {% if requests %}
+                    {% for request in requests %}
+                        <div class="request-item">
+                            <p class="gray-text">Заявка от {{ request.date|date:"d.m.Y H:i" }}</p>
+                            <div class="contact-info">
+                                <p class="inline">{{ request.phone }}</p>
+                                <p class="inline">  {{ request.email }}</p>
+                            </div>
+                            <div class="service-info">
+                                <p>Услуга:</p>
+                                {% if request.service and request.service.id != 7 %}
+                                    <p class="inline">{{ request.service.title }}</p>
+                                {% else %}
+                                    <p class="inline">{{ request.other_service_description }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="payment-info">
+                                <p class="inline"><strong>Способ оплаты:</strong></p>
+                                <p class="inline">
+                                    {% if request.payment_method == 'cash' %}
+                                        Наличные
+                                    {% elif request.payment_method == 'card' %}
+                                        Карта
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="status-info">
+                                <div class="status-details">
+                                    <p class="gray-text inline">Статус:</p>
+                                    <p class="underline-status inline">
+                                        {% if request.status == 'in_progress' %}
+                                            В работе
+                                        {% elif request.status == 'completed' %}
+                                            Выполнено
+                                        {% elif request.status == 'cancelled' %}
+                                            Отменено
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                {% if request.status == 'cancelled' and request.cancellation_reason %}
+                                    <div class="cancellation-reason">
+                                        {{ request.cancellation_reason }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>У вас пока нет заявок.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            <!-- КОНТАКТЫ -->
+            <div class="darkest" id="contacts">
+                <div class="contacts">
+                    <div class="contact_list">
+                        <p class="contact_name">Компания</p>
+                        <a href="https://www.audit-it.ru/contragent/1226600016092_ooo-init?utm_source=chatgpt.com" class="word contact_text">ООО ИНИТ</a>
+                        <a href="https://rusprofiles.com/init-1226600016092/" class="word contact_text">Руководитель</a>
+                        <a href="https://companies.rbc.ru/id/1226600016092-ooo-init/?utm_source=chatgpt.com" class="word contact_text">Основная информация</a>
+                    </div>
+                    <div class="contact_list">
+                        <p class="contact_name">Быстрые ссылки</p>
+                        <a href="https://dobrotsen.ru/" class="word contact_text">Партнёр</a>
+                        <a href="https://synapsenet.ru/organizacii/1226600016092-ooo-init?utm_source=chatgpt.com" class="word contact_text">Синапс</a>
+                        <a href="https://www.list-org.com/company/13342910" class="word contact_text">Организация</a>
+                    </div>
+                    <div class="contact_list"></div>
+                </div>
+            </div>
+
+            <!-- ПОДВАЛ -->
+            <footer><span>ИНИТ</span></footer>
+            </div>
+        </div>
+    
+    
+    <!-- ОКНО ЗАЯВКИ -->
+    <div id="requestModal" class="modal-reg hide">
+        <div id="requestModalContent" class="modal-reg-content">
+            <h2>Оставить заявку</h2>
+            <form id="requestForm" method="post" class="register-form">
+                {% csrf_token %}
+                <label for="id_email">Email:</label>
+                {{ request_form.email }}
+                <label for="id_phone">Телефон:</label>
+                {{ request_form.phone }}
+                <label for="id_service">Выберите услугу:</label>
+                <select id="id_service" name="service">
+                    <option value="">---------</option>
+                    {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.title }}</option>
+                    {% endfor %}
+                </select>
+                <div id="otherServiceField" style="display: none;">
+                    <label for="id_other_service_description">Описание услуги:</label>
+                    <textarea id="id_other_service_description" name="other_service_description" placeholder="Опишите услугу..." rows="3"></textarea>
+                </div>
+                <label for="id_payment_method">Способ оплаты:</label>
+                {{ request_form.payment_method }}
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // закрытие модальных окон
+        function closeModal(modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    modal.classList.add('hide');
+                }
+            });
+        }
+
+        // ОКНО ЗАЯВКИ
+        const requestModal = document.getElementById('requestModal');
+        const openRequestModalBtn = document.getElementById('openRequestModalBtn');
+
+        if (openRequestModalBtn) {
+            openRequestModalBtn.addEventListener('click', function () {
+                requestModal.classList.remove('hide');
+            });
+        }
+
+        closeModal(requestModal);
+
+        // Показать/скрыть "Прочие услуги"
+        const serviceSelect = document.getElementById('id_service');
+        const otherServiceField = document.getElementById('otherServiceField');
+        const otherServiceDescription = document.getElementById('id_other_service_description');
+
+        if (serviceSelect && otherServiceField) {
+            serviceSelect.addEventListener('change', function () {
+                if (this.value === '7') {
+                    otherServiceField.style.display = 'block';
+                } else {
+                    otherServiceField.style.display = 'none';
+                    otherServiceDescription.value = '';
+                }
+            });
+        }
+
+        $('#requestForm').on('submit', function (e) {
+            e.preventDefault();  
+            const formData = $(this).serialize();  
+            console.log("Serialized form data:", formData);  
+            $.ajax({
+                url: "{% url 'create_request' %}",  
+                type: "POST",
+                data: formData,
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert("Заявка успешно отправлена!");
+                        $('#requestModal').addClass('hide');  
+                        window.location.reload();  
+                    } else {
+                        $('.error-message').remove();
+                        for (const [field, messages] of Object.entries(response.errors)) {
+                            const input = $(`#id_${field}`);
+                            input.after(`<div class="error-message" style="color: red;">${messages.join(', ')}</div>`);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ошибка при отправке данных:", error);
+                    alert("Произошла ошибка при отправке заявки. Пожалуйста, попробуйте позже.");
+                }
+            });
+        });
+
+        const form = document.querySelector('#requestForm');
+        const inputs = form.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function () {
+                if (!this.checkValidity()) {
+                    this.classList.add('error');
+                } else {
+                    this.classList.remove('error');
+                }
+            });
+        });
+
+        form.addEventListener('submit', function (e) {
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.classList.add('error');
+                    isValid = false;
+                }
+            });
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+    });
+    </script>
+</body>
+</html>
